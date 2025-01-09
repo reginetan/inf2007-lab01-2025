@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.inf2007.lab01.ui.theme.Lab01Theme
@@ -36,8 +37,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+
     Lab01Theme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            var name by remember { mutableStateOf("") }
             var username by remember { mutableStateOf("") }
             var showGreeting by remember { mutableStateOf(false) }
 
@@ -50,14 +53,22 @@ fun MainScreen() {
             ) {
                 UserInput(
                     name = name,
-                    onNameChange = { name = it }
+                    onNameChange = { newName ->
+                        name = newName
+                    }
                 )
 
                 Button(
                     onClick = {
-                        if (username.isNotBlank()) {
+
+                        if (name.isNotBlank()) {
+                            username = name
+                            showGreeting = true
+                        }
+                        if (name.isBlank()) {
                             showGreeting = false
                         }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -67,7 +78,7 @@ fun MainScreen() {
                 }
 
                 if (showGreeting) {
-                    Greeeting(
+                    Greeting(
                         name = username,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -79,6 +90,7 @@ fun MainScreen() {
         }
     }
 }
+
 
 @Composable
 fun UserInput(name: String, onNameChange: (String) -> Unit, modifier: Modifier = Modifier) {
@@ -95,7 +107,7 @@ fun UserInput(name: String, onNameChange: (String) -> Unit, modifier: Modifier =
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $username!, Welcome to InF2007!",
+        text = "Hello $name!, Welcome to INF2007!",
         modifier = Modifier
             .fillMaxWidth()
             .testTag("greeting")
